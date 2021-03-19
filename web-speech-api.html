@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="jp" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <button id="start-btn">start</button>
+    <button id="stop-btn">stop</button>
+    <div id="result-div"></div>
+    <form action="web-speech-submit.php" method="post">
+      <textarea name="text"id="text" rows="30" cols="100"></textarea>
+      <select name="name">
+      <option>浅野颯太</option>
+      <option>伊藤原野</option>
+      <option>岩本兜矢</option>
+      <option>太田藏之介</option>
+      <option>小倉寛史</option>
+      <option>小泉健太</option>
+      <option>小西恭平</option>
+      <option>鈴木瀬那</option>
+      <option>永井慧</option>
+      <option>藤井亮太</option>
+      <option>古野貴一</option>
+      </select>
+      <input type="submit" name="決定" value="決定">
+    </form>
+    <script>
+    const startBtn = document.querySelector('#start-btn');
+    const stopBtn = document.querySelector('#stop-btn');
+    const resultDiv = document.querySelector('#result-div');
+    const resulttext = document.querySelector('#text');
+
+    SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+    let recognition = new SpeechRecognition();
+
+    recognition.lang = 'ja-JP';
+    recognition.interimResults = true;
+    recognition.continuous = true;
+
+    let finalTranscript = ''; // 確定した(黒の)認識結果
+
+    recognition.onresult = (event) => {
+    let interimTranscript = ''; // 暫定(灰色)の認識結果
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      let transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript;
+      } else {
+        interimTranscript = transcript;
+      }
+    }
+    resultDiv.innerHTML = finalTranscript + '<i style="color:#ddd;">' + interimTranscript + '</i>';
+    resulttext.value = finalTranscript;
+    }
+
+    startBtn.onclick = () => {
+    recognition.start();
+    }
+    stopBtn.onclick = () => {
+    recognition.stop();
+    }
+    var xhr = new XMLHttpRequest();
+
+    </script>
+  </body>
+</html>
